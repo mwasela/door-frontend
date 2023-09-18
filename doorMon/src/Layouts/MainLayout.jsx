@@ -21,6 +21,11 @@ export default function MainLayout() {
                     name: "About",
                     icon: <FiUsers />,
                 },
+                {
+                    path: "/Doors",
+                    name: "Doors",
+                    icon: <FiUsers />,
+                },
             ]}
             menuItemRender={(item, dom) => <Link to={item.path} onClick={()=>{
                 navigate(item.path);
