@@ -5,17 +5,20 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
 
-const _description = "Current Door: C45 PortSide \n Status: Locked \n Last Access: 2021-10-01 12:00:00"
+
 
 const { Statistic } = StatisticCard;
 
-axios.defaults.baseURL = 'http://10.168.3.233:3333/'
+axios.defaults.baseURL = 'http://10.168.3.233:44839/'
 
 export default function Home() {
   const [accessData, setAccessData] = useState([]);
   const [responsive, setResponsive] = useState(false);
   const [length, setLength] = useState(0);
   const [doorData, setdoorData] = useState([]);
+ const [status, setStatus] = useState('offline');
+
+  //the use effect here is quite. Helpful.
 
   useEffect(() => {
     fetchAccesslogs().then((data) => {
@@ -26,10 +29,19 @@ export default function Home() {
   useEffect(() => {
     fetchDoors().then((data) => {
         console.log("doors data", data);
+        setStatus('Online');
      
     });
 }, [doorData]);
 
+
+const _length = doorData.length;
+const _open = doorData.filter((door) => door.mgr_doors_state === "1").length;
+const _description = 
+`
+Doors Connected -> ${_length} \n 
+Doors Opened ->${_open}  
+\n Status: ${status}`;
 
 
   const fetchDoors = async () => {
@@ -47,6 +59,15 @@ export default function Home() {
 
   };
 
+  const pingBackend = async () => {
+    try {
+      const response = await axios.get('/doors');
+      console.log("response", response);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchAccesslogs = async () => {
     try {
@@ -71,7 +92,7 @@ export default function Home() {
         <Col>
 
           <CheckCard
-            title="Current Door"
+            title="Status Summary"
             description={_description}
             style={{ width: 175, height: 160, flex: 1 }}
           />
@@ -118,7 +139,7 @@ export default function Home() {
               chart={
                 <img
                   src="https://gw.alipayobjects.com/zos/alicdn/zevpN7Nv_/xiaozhexiantu.svg"
-                  alt="折线图"
+                  alt="trend"
                   width="100%"
                 />
               }
@@ -141,7 +162,6 @@ export default function Home() {
                 />
               }
             >
-
             </StatisticCard>
           </StatisticCard.Group>
 
@@ -164,7 +184,7 @@ export default function Home() {
       <CheckCard
       key={doorCard.id}
               title={doorCard.mgr_doors_name}
-              description={doorCard.mgr_doors_state}
+              description={doorCard.mgr_doors_state ==="1"? "Unlocked" : "Locked"}
               value="A"
               style={{
                 backgroundColor: doorCard.mgr_doors_state === "1" ? 'red' : 'green',
