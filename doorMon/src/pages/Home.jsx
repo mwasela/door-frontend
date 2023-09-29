@@ -9,7 +9,7 @@ import axios from 'axios'
 
 const { Statistic } = StatisticCard;
 
-axios.defaults.baseURL = 'http://10.168.3.233:44839/'
+axios.defaults.baseURL = 'http://localhost:3333/'
 
 export default function Home() {
   const [accessData, setAccessData] = useState([]);
@@ -56,7 +56,6 @@ Doors Opened ->${_open}
     } catch (error) {
         console.error(error);
     }
-
   };
 
   const pingBackend = async () => {
@@ -115,7 +114,7 @@ Doors Opened ->${_open}
                 title: 'Monthly Access',
                 value: 601,
                 description: (
-                  <Statistic title="Erends" value="6.15%" trend="up" />
+                  <Statistic title="Total" value="6.15%" trend="up" />
                 ),
               }}
               chart={
@@ -133,7 +132,7 @@ Doors Opened ->${_open}
                 title: 'Normal',
                 value: 438,
                 description: (
-                  <Statistic title="UpT rend" value="3.85%" trend="down" />
+                  <Statistic title="Up" value="3.85%" trend="down" />
                 ),
               }}
               chart={

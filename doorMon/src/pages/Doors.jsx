@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 
 export default function Doors() {
-    axios.defaults.baseURL = 'http://10.168.3.233:44839/'
+    axios.defaults.baseURL = 'http://localhost:3333/'
 
     const [doorData, setdoorData] = useState([]);
 
@@ -64,14 +64,14 @@ export default function Doors() {
         },
         {
             title: "Location",
-            dataIndex: "mgr_doors_location",
+            dataIndex: ["location", "mgr_location_name"],
             type: "textarea",
             key: "location",
 
         },
         {
             title: "Terminal",
-            dataIndex: "mgr_doors_terminal",
+            dataIndex: ["terminal", "mgr_terminal_name"],
             key: "terminal",
 
         },
