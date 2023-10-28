@@ -4,6 +4,7 @@ import { Row, Col, Tag } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
+import moment from 'moment'
 
 
 
@@ -232,11 +233,13 @@ Doors Opened ->${_open}
               title: 'TimeStamp',
               dataIndex: 'mgr_accesslogs_time',
               key: 'mgr_accesslogs_time',
-                valueType: 'dateTime',
-                render: (dom, entity) => {
-                  return dom
-                }
+              valueType: 'dateTime',
+              render: (text, record) => {
+                const timeDifference = moment(record.mgr_accesslogs_time).fromNow();
+                return <span>{timeDifference}</span>;
+              },
             },
+            
             {
               title: 'Door',
               dataIndex: ['door', "mgr_doors_name"],
