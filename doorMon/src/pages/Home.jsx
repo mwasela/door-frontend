@@ -26,7 +26,7 @@ export default function Home() {
     fetchAccesslogs().then((data) => {
       console.log("access data", accessData);
     });
-  }, []);
+  }, [accessData]);
 
   useEffect(() => {
     fetchDoors().then((data) => {
@@ -239,7 +239,16 @@ Doors Opened ->${_open}
                 return <span>{timeDifference}</span>;
               },
             },
-            
+            // {
+            //   title: 'TimeStamp',
+            //   dataIndex: 'mgr_accesslogs_time',
+            //   key: 'mgr_accesslogs_time',
+            //   valueType: 'dateTime',
+            //   render: (text, record) => {
+            //     const formattedTime = moment(record.mgr_accesslogs_time).format('llll');
+            //     return <span>{formattedTime}</span>;
+            //   },
+            // },             
             {
               title: 'Door',
               dataIndex: ['door', "mgr_doors_name"],
