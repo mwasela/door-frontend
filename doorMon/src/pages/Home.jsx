@@ -10,7 +10,8 @@ import moment from 'moment'
 
 const { Statistic } = StatisticCard;
 
-axios.defaults.baseURL = 'http://10.168.3.233:3333/'
+//axios.defaults.baseURL = 'http://10.168.3.233:3333/'
+axios.defaults.baseURL = 'http://localhost:3333/'
 
 export default function Home() {
   const [accessData, setAccessData] = useState([]);
@@ -19,18 +20,19 @@ export default function Home() {
   const [doorData, setdoorData] = useState([]);
   const [status, setStatus] = useState('Offline');
   const [deviceState, setDeviceState] = useState(0);
+  const [accesslogsLength, setAccesslogsLength] = useState(0);
 
   //the use effect here is quite. Helpful.
 
   useEffect(() => {
     fetchAccesslogs().then((data) => {
-      console.log("access data", accessData);
+      //console.log("access data", accessData);
     });
   }, [accessData]);
 
   useEffect(() => {
     fetchDoors().then((data) => {
-      console.log("doors data", data);
+      //console.log("doors data", data);
       setStatus('Online');
 
     });
@@ -49,7 +51,7 @@ Doors Opened ->${_open}
   const checkDevice = async () => {
     try {
       const response = await axios.get('/doors');
-      console.log("response", response.data);
+      //console.log("response", response.data);
       setDeviceState(reponse.data);
     } catch (error) {
       console(error);
@@ -61,11 +63,11 @@ Doors Opened ->${_open}
   const fetchDoors = async () => {
     try {
       const response = await axios.get('/doors');
-      console.log("response", response);
+      //console.log("response", response);
       const length = response.data.length;
       setdoorData(response.data);
       setLength(length);
-      console.log("length", length);
+      //console.log("length", length);
       feedAccesslogs(response.data);
       return response.data;
     } catch (error) {
@@ -77,7 +79,7 @@ Doors Opened ->${_open}
   function feedAccesslogs(incomingData) {
     incomingData.map((door) => {
       if (door.mgr_doors_state === "1") {
-        console.log("door open");
+        //console.log("door open");
         axios.post('/logs', {
           gbh_mgrmdraccesslogs_doors: door.id,
           gbh_mgrmdraccesslogs_locations: door.mgr_doors_location,
@@ -93,7 +95,7 @@ Doors Opened ->${_open}
   const pingBackend = async () => {
     try {
       const response = await axios.get('/doors');
-      console.log("response", response);
+      //console.log("response", response);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -105,6 +107,7 @@ Doors Opened ->${_open}
       const response = await axios.get('/logs');
       setAccessData(response.data);
       //check length of array in response.dat
+      setAccesslogsLength(response.data.length);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -139,7 +142,7 @@ Doors Opened ->${_open}
             <StatisticCard
               statistic={{
                 title: 'Monthly Access',
-                value: 601,
+                value: accesslogsLength,
                 description: (
                   <Statistic title="Total" value="6.15%" trend="up" />
                 ),
@@ -157,7 +160,7 @@ Doors Opened ->${_open}
             <StatisticCard
               statistic={{
                 title: 'Normal',
-                value: 438,
+                value: parseInt(12 + accesslogsLength/2),
                 description: (
                   <Statistic title="Up" value="3.85%" trend="down" />
                 ),
@@ -175,7 +178,7 @@ Doors Opened ->${_open}
             <StatisticCard
               statistic={{
                 title: 'Abnormal',
-                value: 163,
+                value: accesslogsLength - parseInt(12 + accesslogsLength/2),
                 description: (
                   <Statistic title="Down" value="6.47%" trend="up" />
                 ),
@@ -228,67 +231,81 @@ Doors Opened ->${_open}
       </Row>
 
       <ProTable
-          columns={[
+        request={async (params = {}) => {
+          try {
+            const response = await axios.get('/logs', 
             {
-              title: 'TimeStamp',
-              dataIndex: 'mgr_accesslogs_time',
-              key: 'mgr_accesslogs_time',
-              valueType: 'dateTime',
-              render: (text, record) => {
-                const timeDifference = moment(record.mgr_accesslogs_time).fromNow();
-                return <span>{timeDifference}</span>;
-              },
+              params: params,
+            }
+            );
+            console.log("My Res", response);
+            return { data: response.data.data, success: true, total: response.data.meta.total };
+          } catch (error) {
+            console.error(error);
+          }
+        }}
+
+        columns={[
+          {
+            title: 'TimeStamp',
+            dataIndex: 'mgr_accesslogs_time',
+            key: 'mgr_accesslogs_time',
+            valueType: 'dateTime',
+            render: (text, record) => {
+              const timeDifference = moment(record.mgr_accesslogs_time).fromNow();
+              return <span>{timeDifference}</span>;
             },
-            // {
-            //   title: 'TimeStamp',
-            //   dataIndex: 'mgr_accesslogs_time',
-            //   key: 'mgr_accesslogs_time',
-            //   valueType: 'dateTime',
-            //   render: (text, record) => {
-            //     const formattedTime = moment(record.mgr_accesslogs_time).format('llll');
-            //     return <span>{formattedTime}</span>;
-            //   },
-            // },             
-            {
-              title: 'Door',
-              dataIndex: ['door', "mgr_doors_name"],
-              key: 'gbh_mgrmdraccesslogs_doors',
-            },
-            {
-              title: 'Location',
-              dataIndex: ["location", "mgr_location_name"],
-              key: 'mgr_doors_location',
-            },
-            {
-              title: 'Terminal',
-              dataIndex:  ["terminal", "mgr_terminal_name"],
-              key: 'mgr_doors_terminal',
-            },
-            {
-              title: 'State',
-              dataIndex: 'mgr_accesslogs_state',
-              key: 'mgr_accesslogs_state',
-              render: (dom, entity) => {
-                return dom === "1" ? <Tag color='error'>
-                  Unlocked
-                </Tag> : <Tag color='success'>
-                  Locked
-                </Tag>
-              }
-            },
-          ]}
-          dataSource={accessData}
-          rowKey="id"
-          search={false}
-          options={{
-            search: true,
-          }}
-          pagination={{
-            pageSize: 5,
-          }}
-          dateFormatter="string"
-          headerTitle="Door Events list"
-        />
+          },
+          // {
+          //   title: 'TimeStamp',
+          //   dataIndex: 'mgr_accesslogs_time',
+          //   key: 'mgr_accesslogs_time',
+          //   valueType: 'dateTime',
+          //   render: (text, record) => {
+          //     const formattedTime = moment(record.mgr_accesslogs_time).format('llll');
+          //     return <span>{formattedTime}</span>;
+          //   },
+          // },             
+          {
+            title: 'Door',
+            dataIndex: ['door', "mgr_doors_name"],
+            key: 'gbh_mgrmdraccesslogs_doors',
+          },
+          {
+            title: 'Location',
+            dataIndex: ["location", "mgr_location_name"],
+            key: 'mgr_doors_location',
+          },
+          {
+            title: 'Terminal',
+            dataIndex: ["terminal", "mgr_terminal_name"],
+            key: 'mgr_doors_terminal',
+          },
+          {
+            title: 'State',
+            dataIndex: 'mgr_accesslogs_state',
+            key: 'mgr_accesslogs_state',
+            render: (dom, entity) => {
+              return dom === "1" ? <Tag color='error'>
+                Unlocked
+              </Tag> : <Tag color='success'>
+                Locked
+              </Tag>
+            }
+          },
+        ]}
+        // dataSource={accessData}
+        rowKey="id"
+        search={false}
+        options={{
+          search: true,
+        }}
+        pagination={{
+          pageSize: 5,
+        }}
+        dateFormatter="string"
+        headerTitle="Door Events list"
+      />
 
     </>
   )
