@@ -3,15 +3,14 @@ import { CheckCard, StatisticCard, ProCard, ProTable } from '@ant-design/pro-com
 import { Row, Col, Tag } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import axios from 'axios'
+import axios from '../helpers/axios'
 import moment from 'moment'
-
 
 
 const { Statistic } = StatisticCard;
 
 //axios.defaults.baseURL = 'http://10.168.3.233:3333/'
-axios.defaults.baseURL = 'http://localhost:3333/'
+//axios.defaults.baseURL = 'http://localhost:3333/'
 
 export default function Home() {
   const [accessData, setAccessData] = useState([]);
@@ -48,16 +47,16 @@ Doors Opened ->${_open}
 \n Status: ${status}`;
 
 
-  const checkDevice = async () => {
-    try {
-      const response = await axios.get('/doors');
-      //console.log("response", response.data);
-      setDeviceState(reponse.data);
-    } catch (error) {
-      console(error);
-    }
+  // const checkDevice = async () => {
+  //   try {
+  //     const response = await axios.get('/doors');
+  //     //console.log("response", response.data);
+  //     setDeviceState(response.data);
+  //   } catch (error) {
+  //     console(error);
+  //   }
 
-  }
+  // }
 
 
   const fetchDoors = async () => {
@@ -107,7 +106,9 @@ Doors Opened ->${_open}
       const response = await axios.get('/logs');
       setAccessData(response.data);
       //check length of array in response.dat
-      setAccesslogsLength(response.data.length);
+      setAccesslogsLength(response.data.meta.total);
+      console.log("accesslogsLength", response.data);
+      //console.log("accesslogsLength", accesslogsLength);
       return response.data;
     } catch (error) {
       console.error(error);
