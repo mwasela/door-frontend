@@ -4,7 +4,7 @@ import { Button, Badge } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText, ProFormSelect, ProForm } from '@ant-design/pro-form';
 import { message } from 'antd';
-import axios from 'axios';
+import axios from '../../helpers/axios';
 import { useEffect, useState } from 'react';
 
 
