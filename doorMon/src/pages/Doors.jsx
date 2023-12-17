@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 
 export default function Doors() {
-    axios.defaults.baseURL = 'http://10.168.3.233:3333/'
+   // axios.defaults.baseURL = 'http://10.168.3.233:3333/'
 
     const [doorData, setdoorData] = useState([]);
 
