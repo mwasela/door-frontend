@@ -2,7 +2,7 @@
 import { CheckCard, StatisticCard, ProCard, ProTable } from '@ant-design/pro-components'
 import { Row, Col, Tag } from 'antd'
 import { useState } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import axios from '../helpers/axios'
 import moment from 'moment'
 
@@ -13,6 +13,7 @@ const { Statistic } = StatisticCard;
 //axios.defaults.baseURL = 'http://localhost:3333/'
 
 export default function Home() {
+  const actionRef = useRef();
   const [accessData, setAccessData] = useState([]);
   const [responsive, setResponsive] = useState(false);
   const [length, setLength] = useState(0);
@@ -26,6 +27,7 @@ export default function Home() {
   useEffect(() => {
     fetchAccesslogs().then((data) => {
       //console.log("access data", accessData);
+      actionRef.current.reload();
     });
   }, [accessData]);
 
@@ -233,6 +235,7 @@ Doors Opened ->${_open}
       </Row>
 
       <ProTable
+      actionRef={actionRef}
         request={async (params = {}) => {
           try {
             const response = await axios.get('/logs', 
@@ -297,6 +300,7 @@ Doors Opened ->${_open}
           },
         ]}
         // dataSource={accessData}
+
         rowKey="id"
         search={false}
         options={{
