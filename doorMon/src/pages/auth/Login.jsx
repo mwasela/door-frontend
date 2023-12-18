@@ -29,6 +29,7 @@ export default function Login() {
           position: "absolute",
           paddingTop: "100px",
         }}
+        //
       >
         <LoginForm
           logo={gbhlIcon}

@@ -67,7 +67,7 @@ Doors Opened ->${_open}
       setdoorData(response.data);
       setLength(length);
       //console.log("length", length);
-      feedAccesslogs(response.data);
+      //feedAccesslogs(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -75,22 +75,23 @@ Doors Opened ->${_open}
   };
 
 
-  function feedAccesslogs(incomingData) {
-    incomingData.map((door) => {
-      if (door.mgr_doors_state === "1") {
-        //console.log("door open");
-        axios.post('/logs', {
-          gbh_mgrmdraccesslogs_doors: door.id,
-          gbh_mgrmdraccesslogs_locations: door.mgr_doors_location,
-          gbh_mgrmdraccesslogs_terminal: door.mgr_doors_terminal,
-          mgr_accesslogs_state: door.mgr_doors_state,
+  // function feedAccesslogs(incomingData) {
+  //   incomingData.map((door) => {
+  //     if (door.mgr_doors_state === "1") {
+  //       //console.log("door open");
+  //       axios.post('/logs', {
+  //         gbh_mgrmdraccesslogs_doors: door.id,
+  //         gbh_mgrmdraccesslogs_locations: door.mgr_doors_location,
+  //         gbh_mgrmdraccesslogs_terminal: door.mgr_doors_terminal,
+  //         mgr_accesslogs_state: door.mgr_doors_state,
 
-        })
-      } else {
-        return;
-      }
-    })
-  }
+  //       })
+  //     } else {
+  //       return;
+  //     }
+  //   })
+  // }
+
   const pingBackend = async () => {
     try {
       const response = await axios.get('/doors');
