@@ -26,9 +26,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchAccesslogs().then((data) => {
+   
       //console.log("access data", accessData);
-      actionRef.current.reload();
+      
     });
+    actionRef.current.reload();
   }, [accessData]);
 
   useEffect(() => {
@@ -110,6 +112,7 @@ Doors Opened ->${_open}
       setAccessData(response.data);
       //check length of array in response.dat
       setAccesslogsLength(response.data.meta.total);
+      //
       console.log("accesslogsLength", response.data);
       //console.log("accesslogsLength", accesslogsLength);
       return response.data;

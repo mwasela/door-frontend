@@ -1,5 +1,5 @@
 import ProLayout from "@ant-design/pro-layout";
-import gbhlIcon from "../images/logo/gbhl-icon.png";
+import gbhlIcon from "../images/logo/icon.png";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { FiBriefcase, FiUsers } from "react-icons/fi";
 import { useEffect } from "react";
@@ -17,7 +17,8 @@ export default function MainLayout() {
     return (
         <ProLayout
             logo={gbhlIcon}
-            title="GBHL Door Monitor"
+            title="Bulkstream Door Monitor"
+            layout="mix"
             menuDataRender={() => [
                 {
                     path: "/",

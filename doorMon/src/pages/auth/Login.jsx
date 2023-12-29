@@ -1,6 +1,6 @@
 import { ConfigProvider, notification } from "antd";
 import { LoginForm, ProFormCheckbox, ProFormText } from "@ant-design/pro-form";
-import gbhlIcon from "../../images/logo/gbhl-icon.png";
+import gbhlIcon from "../../public/bslogo.png";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -26,15 +26,21 @@ export default function Login() {
         style={{
           height: "100vh",
           width: "100vw",
-          position: "absolute",
+          // position: "absolute",
           paddingTop: "100px",
+
         }}
         //
       >
         <LoginForm
-          logo={gbhlIcon}
+          //logo={gbhlIcon}
+          //resize logo
+          logo={<img src={gbhlIcon} />}
           //title="Door Monitor"
-          subTitle={<h1>DOOR MONITOR</h1>}
+          subTitle={<h2 style={{
+            marginBlockStart: "0.2em !important",
+            marginBlockEnd: "0.2em !important",
+          }}>DOOR MONITOR</h2>}
           initialValues={{
             autoLogin: true,
           }}
